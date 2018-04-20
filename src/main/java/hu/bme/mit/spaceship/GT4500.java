@@ -91,7 +91,7 @@ public class GT4500 implements SpaceShip {
 
         break;
     }
-    //elso komments
+    //masodik komments
     return firingSuccess;
   }
 
