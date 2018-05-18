@@ -65,6 +65,9 @@ public class GT4500Test {
     when(ship.allFireAction()).thenReturn(true);
   }
 
-
+  @Test
+  public void FireLaser_Fail(){
+    when(ship.fireLaser(null)).thenReturn(false);
+  }
 
 }
