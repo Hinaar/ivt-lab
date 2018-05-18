@@ -9,42 +9,48 @@ import org.junit.Test;
 public class GT4500Test {
 
   private GT4500 ship;
-  private TorpedoStore mockStorePrimary;
-  private TorpedoStore mockStoreSecondary;
+  private TorpedoStore mockTS1;
+  private TorpedoStore mockTS2;
 
   @Before
   public void init(){
-    mockStorePrimary = mock(TorpedoStore.class);
-    mockStoreSecondary = mock(TorpedoStore.class);
-
-    this.ship = new GT4500(mockStorePrimary, mockStoreSecondary);
+    mockTS1 = mock(TorpedoStore.class);
+    mockTS2 = mock(TorpedoStore.class);
+    this.ship = new GT4500(mockTS1, mockTS2);
   }
 
   @Test
   public void fireTorpedo_Single_Success(){
-    // Arrange
-    when(mockStorePrimary.isEmpty().thenReturn(false);
-    when(mockStorePrimary.fire(1)).thenReturn(true);
-
-    when(mockStoreSecondary.isEmpty()).thenReturn(false);
-    when(mockStoreSecondary.fire(1)).thenReturn(true);
-
-    // Act
-    boolean result = ship.fireTorpedo(FiringMode.SINGLE);
-
-    // Assert
-    assertEquals(true, result);
+    when(ship.fireTorpedo(FiringMode.SINGLE)).thenReturn(true);
   }
 
   @Test
   public void fireTorpedo_All_Success(){
-    // Arrange
+    when(ship.fireTorpedo(FiringMode.ALL)).thenReturn(true);
+  }
 
-    // Act
-    boolean result = ship.fireTorpedo(FiringMode.ALL);
+  @Test
+  public void fireTorpedo_PrimaryFire_Success(){
+    when(ship.primaryFireAction()).thenReturn(true);
+  }
 
-    // Assert
-    assertEquals(true, result);
+  @Test
+  public void fireTorpedo_SecondaryFire_Success(){
+    when(ship.secondaryFireAction()).thenReturn(true);
+  }
+
+  @Test
+  public void fireTorpedo_PrimaryFire_Fail(){
+    ship.primaryTorpedoStore.makeEmpty();
+    ship.secondaryTorpedoStore.makeEmpty();
+    when(ship.primaryFireAction()).thenReturn(false);
+  }
+
+  @Test
+  public void fireTorpedo_SecondaryFire_Fail(){
+    ship.primaryTorpedoStore.makeEmpty();
+    ship.secondaryTorpedoStore.makeEmpty();
+    when(ship.secondaryFireAction()).thenReturn(false);
   }
 
 }

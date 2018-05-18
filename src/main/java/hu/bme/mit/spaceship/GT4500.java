@@ -5,20 +5,63 @@ package hu.bme.mit.spaceship;
 */
 public class GT4500 implements SpaceShip {
 
-  private TorpedoStore primaryTorpedoStore;
-  private TorpedoStore secondaryTorpedoStore;
+  public TorpedoStore primaryTorpedoStore;
+  public TorpedoStore secondaryTorpedoStore;
 
   private boolean wasPrimaryFiredLast = false;
 
-  public GT4500(TorpedoStore primary, TorpedoStore secondary) {
-    this.primaryTorpedoStore = primary;// new TorpedoStore(10);
-    this.secondaryTorpedoStore = secondary;//new TorpedoStore(10);
+  public GT4500(TorpedoStore torpedoStore, TorpedoStore torpedoStore2) {
+    this.primaryTorpedoStore = torpedoStore;
+    this.secondaryTorpedoStore = torpedoStore2;
   }
 
   public boolean fireLaser(FiringMode firingMode) {
-    // oh
+    // TODO not implemented yet
     return false;
   }
+
+  public boolean primaryFireAction() {
+    if (! secondaryTorpedoStore.isEmpty()) {
+      wasPrimaryFiredLast = false;
+      return secondaryTorpedoStore.fire(1);
+
+    }
+    else if (! primaryTorpedoStore.isEmpty()) {
+      wasPrimaryFiredLast = true;
+      return primaryTorpedoStore.fire(1);
+    }
+    return false;
+  }
+
+  public boolean secondaryFireAction() {
+    if (! primaryTorpedoStore.isEmpty()) {
+      wasPrimaryFiredLast = true;
+      return primaryTorpedoStore.fire(1);
+    }
+    else if (! secondaryTorpedoStore.isEmpty()) {
+      wasPrimaryFiredLast = false;
+      return secondaryTorpedoStore.fire(1);
+    }
+    return false;
+  }
+
+  public boolean singleFireAction() {
+    if (wasPrimaryFiredLast)
+      return primaryFireAction();
+    return secondaryFireAction();
+  }
+
+  public boolean allFireAction() {
+    boolean firingSuccess = false;
+    if (!primaryTorpedoStore.isEmpty() && !secondaryTorpedoStore.isEmpty()) {
+      firingSuccess = primaryTorpedoStore.fire(1);
+      if (firingSuccess)
+        firingSuccess = secondaryTorpedoStore.fire(1);
+    }
+    return firingSuccess;
+  }
+
+
   /**
   * Tries to fire the torpedo stores of the ship.
   *
@@ -36,55 +79,12 @@ public class GT4500 implements SpaceShip {
   public boolean fireTorpedo(FiringMode firingMode) {
 
     boolean firingSuccess = false;
-    if (firingMode == FiringMode.SINGLE ){
-      if (wasPrimaryFiredLast) {
-        // try to fire the secondary first
-        if (! secondaryTorpedoStore.isEmpty()) {
-          firingSuccess = secondaryTorpedoStore.fire(1);
-          wasPrimaryFiredLast = false;
-        }
-        else {
-          // although primary was fired last time, but the secondary is empty
-          // thus try to fire primary again
-          if (! primaryTorpedoStore.isEmpty()) {
-            firingSuccess = primaryTorpedoStore.fire(1);
-            wasPrimaryFiredLast = true;
-          }
 
-          // if both of the stores are empty, nothing can be done, return failure
-        }
-      }
-      else {
-        // try to fire the primary first
-        if (! primaryTorpedoStore.isEmpty()) {
-          firingSuccess = primaryTorpedoStore.fire(1);
-          wasPrimaryFiredLast = true;
-        }
-        else {
-          // although secondary was fired last time, but primary is empty
-          // thus try to fire secondary again
-          if (! secondaryTorpedoStore.isEmpty()) {
-            firingSuccess = secondaryTorpedoStore.fire(1);
-            wasPrimaryFiredLast = false;
-          }
-          // if both of the stores are empty, nothing can be done, return failure
-        }
-      }
-    }
+    if (firingMode == FiringMode.SINGLE)
+      firingSuccess = singleFireAction();
+    else if (firingMode == FiringMode.ALL)
+      firingSuccess = allFireAction();
 
-    else if (firingMode == FiringMode.ALL){
-      // try to fire both of the torpedo stores
-      if(! primaryTorpedoStore.isEmpty()){
-        firingSuccess = primaryTorpedoStore.fire(1);
-        wasPrimaryFiredLast = true;
-      }
-
-      if(! secondaryTorpedoStore.isEmpty()){
-        firingSuccess = secondaryTorpedoStore.fire(1);
-        wasPrimaryFiredLast = false;
-      }
-    }
-    //masodik komments
     return firingSuccess;
   }
 
