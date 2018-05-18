@@ -20,13 +20,6 @@ public class GT4500Test {
   }
 
   @Test
-  public void fireTorpedo_AllFire_Fail(){
-    ship.primaryTorpedoStore.makeEmpty();
-    ship.secondaryTorpedoStore.makeEmpty();
-    when(ship.allFireAction()).thenReturn(false);
-  }
-
-  @Test
   public void fireTorpedo_Single_Success(){
     when(ship.fireTorpedo(FiringMode.SINGLE)).thenReturn(true);
   }
@@ -66,8 +59,10 @@ public class GT4500Test {
   }
 
   @Test
-  public void FireLaser_Fail(){
-    when(ship.fireLaser(null)).thenReturn(false);
+  public void fireTorpedo_AllFire_Fail(){
+    ship.primaryTorpedoStore.makeEmpty();
+    ship.secondaryTorpedoStore.makeEmpty();
+    when(ship.allFireAction()).thenReturn(false);
   }
 
 }
